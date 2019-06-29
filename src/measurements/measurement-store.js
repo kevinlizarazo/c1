@@ -23,7 +23,7 @@ export function add(measurement) {
  */
 export function fetch(timestamp) {
   if (data.has(timestamp)){
-    return data.get(timestamp)
+    return data[timestamp]
   }
   return null
 }
