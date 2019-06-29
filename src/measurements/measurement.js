@@ -22,4 +22,17 @@ export class Measurement {
   getMetric(name) {
     return this.metrics.get(name);
   }
+
+  getInvalidMetrics() {
+    let invalidKeys = []
+    let keys = this.metrics.keys
+    for (i = 0; i < keys.length; i++){
+      let value = this.metrics.get(keys[i])
+      if (!isFloat(value)) {
+        invalidKeys.push(keys[i])
+      }
+    }
+    return invalidKeys;
+  }
+
 }
