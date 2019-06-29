@@ -13,7 +13,7 @@ export function add(measurement) {
   if (invalids.length > 0){
     throw new HttpError(400, invalids.toString())
   }
-  data[measurement.timestamp] = measurement
+  data.set(measurement.timestamp, measurement)
 }
 
 /**
@@ -22,12 +22,10 @@ export function add(measurement) {
  * @returns {Measurement} measurement for the particular date
  */
 export function fetch(timestamp) {
-  if (!data.has(timestamp)){
-    throw new HttpError(404);
+  if (data.has(timestamp)){
+    return data.get(timestamp)
   }
-
-  return data[timestamp]
-
+  return null
 }
 
 /**
