@@ -1,7 +1,7 @@
 import { Measurement } from './measurement';
 import { HttpError } from '../errors';
 
-let data = []
+let data = new Map();
 /**
  * Add new measurement
  * @param {Measurement} measurement to be added
@@ -13,7 +13,7 @@ export function add(measurement) {
   if (invalids.length > 0){
     throw new HttpError(400, invalids.toString())
   }
-  throw new HttpError(501);
+  data[measurement.timestamp] = measurement
 }
 
 /**
@@ -22,7 +22,12 @@ export function add(measurement) {
  * @returns {Measurement} measurement for the particular date
  */
 export function fetch(timestamp) {
-  throw new HttpError(501);
+  if (!data.has(timestamp)){
+    throw new HttpError(404);
+  }
+
+  return data[timestamp]
+
 }
 
 /**

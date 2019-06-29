@@ -26,7 +26,7 @@ export class Measurement {
   getInvalidMetrics() {
     let invalidKeys = []
     let keys = this.metrics.keys
-    for (i = 0; i < keys.length; i++){
+    for (let i = 0; i < keys.length; i++){
       let value = this.metrics.get(keys[i])
       if (!isFloat(value)) {
         invalidKeys.push(keys[i])
