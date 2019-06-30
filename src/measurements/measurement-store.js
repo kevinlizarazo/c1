@@ -7,13 +7,11 @@ let data = new Map();
  * @param {Measurement} measurement to be added
  */
 export function add(measurement) {
-  // show error checking on failure cases
-  // define a simple data store -- in memory -- so fetch() can read and queryDateRange() can mutate
   let invalids = measurement.getInvalidMetrics();
   if (invalids.length > 0){
     throw new HttpError(400, invalids.toString())
   }
-  data.set(measurement.timestamp, measurement)
+  data.set(measurement.timestamp.toISOString(), measurement)
 }
 
 /**
@@ -22,8 +20,8 @@ export function add(measurement) {
  * @returns {Measurement} measurement for the particular date
  */
 export function fetch(timestamp) {
-  if (data.has(timestamp)){
-    return data[timestamp]
+  if (data.has(timestamp.toISOString())){
+    return data.get(timestamp.toISOString())
   }
   return null
 }
@@ -34,6 +32,14 @@ export function fetch(timestamp) {
  * @param {Date} end Upper bound for the query, exclusive
  */
 export function queryDateRange(from, to) {
-  throw new HttpError(501);
+  let measurementsRange = [];
+  for (key in data.keys){
+    let keyDate = new Date(key)
+    if (keyDate >= from && keyDate < to){
+      measurementsRange.push(data[key])
+    }
+  }
+  return measurementsRange;
+
 }
 
