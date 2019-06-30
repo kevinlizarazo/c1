@@ -1,7 +1,7 @@
 import { Measurement } from './measurement';
 import { HttpError } from '../errors';
 
-let data = new Map();
+let data = {}
 /**
  * Add new measurement
  * @param {Measurement} measurement to be added
@@ -11,7 +11,7 @@ export function add(measurement) {
   if (invalids.length > 0){
     throw new HttpError(400, invalids.toString())
   }
-  data.set(measurement.timestamp.toISOString(), measurement)
+  data[measurement.timestamp.toISOString()] = measurement
 }
 
 /**
@@ -20,8 +20,8 @@ export function add(measurement) {
  * @returns {Measurement} measurement for the particular date
  */
 export function fetch(timestamp) {
-  if (data.has(timestamp.toISOString())){
-    return data.get(timestamp.toISOString())
+  if (data[timestamp.toISOString()]){
+    return data[timestamp.toISOString()]
   }
   return null
 }
@@ -33,13 +33,12 @@ export function fetch(timestamp) {
  */
 export function queryDateRange(from, to) {
   let measurementsRange = [];
-  for (key in data.keys){
-    let keyDate = new Date(key)
-    if (keyDate >= from && keyDate < to){
-      measurementsRange.push(data[key])
+  for (let key in data ){
+    let measurement = data[key]
+    if (measurement.timestamp >= from && measurement.timestamp < to){
+      measurementsRange.push(measurement)
     }
   }
   return measurementsRange;
 
 }
-

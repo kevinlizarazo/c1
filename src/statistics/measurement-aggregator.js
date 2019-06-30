@@ -10,9 +10,10 @@ import { Measurement } from '../measurements/measurement';
  */
 export function computeStats(measurements, metrics, stats) {
   let data = [];
-  for (let metric in metrics){
-    for (let stat in computeStats(measurements, metric, stats)){
-      data.push(stat)
+  for (let i = 0; i < metrics.length; i++){
+    let computedResults = computeStatsForMetric(measurements, metrics[i], stats)
+    for (let j = 0; j < computedResults.length; j++ ){
+      data.push(computedResults[j])
     }
   }
   return data;
@@ -24,34 +25,38 @@ export function computeStats(measurements, metrics, stats) {
  * @param {String[]} stats
  * @return {*}
  */
-function computeStats(measurements, metric, stats){
-
-  let values = new Array();
-  for (let measurement in measurements){
-    let value = measurement.getMetric(metric)
+function computeStatsForMetric(measurements, metric, stats){
+  let firstMetric = metric
+  let values = [];
+  measurements.forEach((v, i) => {
+    let value = measurements[i].getMetric(firstMetric)
     if (value != null){
       values.push(value)
     }
+  });
+
+  if (values.length <= 0){
+    return [];
   }
 
   let statistics = [];
-  for (let stat in stats){
-    let statMap = new Map();
+  for (let i = 0; i < stats.length; i++){
+    let statMap = {}
     let computedStat
-    statMap.set('metric', metric)
-    statMap.set('stat', stat)
-    switch (stat){
+    statMap['metric'] = firstMetric
+    statMap['stat'] = stats[i]
+    switch (stats[i]){
       case 'min':
-        computedStat = Math.min(values)
+        statMap['value'] = Math.min(...values)
+        break;
       case 'max':
-        computedStat = Math.max(values)
+        statMap['value'] =  Math.max(...values)
+        break;
       case 'average':
-        computedStat = (values.reduce((a,b) => a + b, 0)/values.length)
+        statMap['value'] = Math.round((values.reduce((a,b) => a + b, 0)/values.length))
     }
-    statMap.set('value', computedStat)
+    
     statistics.push(statMap);
   }
-
   return statistics
-
 }
