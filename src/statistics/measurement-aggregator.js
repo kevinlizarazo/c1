@@ -47,15 +47,16 @@ function computeStatsForMetric(measurements, metric, stats){
     statMap['stat'] = stats[i]
     switch (stats[i]){
       case 'min':
-        statMap['value'] = Math.min(...values)
+        computedStat = Math.min(...values)
         break;
       case 'max':
-        statMap['value'] =  Math.max(...values)
+        computedStat = Math.max(...values)
         break;
       case 'average':
-        statMap['value'] = Math.round((values.reduce((a,b) => a + b, 0)/values.length))
+        computedStat = values.reduce((a,b) => a + b, 0)/values.length
     }
     
+    statMap['value'] = Number(computedStat.toFixed(1))
     statistics.push(statMap);
   }
   return statistics
